@@ -52,7 +52,6 @@ class refnotes_reference_database {
             $this->loadPages();
             $this->loadNamespaces();
         }
-        print_r($this);
     }
 
     /**
