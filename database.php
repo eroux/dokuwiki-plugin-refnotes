@@ -52,6 +52,7 @@ class refnotes_reference_database {
             $this->loadPages();
             $this->loadNamespaces();
         }
+        print_r($this);
     }
 
     /**
@@ -104,27 +105,28 @@ class refnotes_reference_database {
      */
     private function loadPages() {
         global $conf;
-
-        if (file_exists($conf['indexdir'] . '/page.idx')) {
-            require_once(DOKU_INC . 'inc/indexer.php');
-
-            $pageIndex = idx_getIndex('page', '');
-            $namespace = refnotes_configuration::getSetting('reference-db-namespace');
-            $namespacePattern = '/^' . trim($namespace, ':') . ':/';
-            $cache = new refnotes_reference_database_cache();
-
-            foreach ($pageIndex as $pageId) {
-                $pageId = trim($pageId);
-
-                if ((preg_match($namespacePattern, $pageId) == 1) && file_exists(wikiFN($pageId))) {
-                    $this->enabled = false;
-                    $this->page[$pageId] = new refnotes_reference_database_page($this, $cache, $pageId);
-                    $this->enabled = true;
-                }
-            }
-
-            $cache->save();
+        $list = array();
+        $nsdir = refnotes_configuration::getSetting('reference-db-namespace');
+        $nsdir = str_replace(':', '/', $nsdir);
+        $nsdir = trim($nsdir, '/ ');
+        $cache = new refnotes_reference_database_cache();
+        $opts = array('listdirs'  => false,
+              'listfiles' => true,
+              'pagesonly' => true,
+              'depth'     => 1,
+              'skipacl'   => false, // to check for read right
+              'sneakyacl' => true,
+              'showhidden'=> false,
+              );
+        // we cannot use $opts in search_list or in search_namespaces, see
+        // https://bugs.dokuwiki.org/index.php?do=details&task_id=2858
+        search($list,$conf['datadir'],'search_universal',$opts,$nsdir);
+        foreach ($list as $page) {
+            $this->enabled = false;
+            $this->page[$page['id']] = new refnotes_reference_database_page($this, $cache, $page['id']);
+            $this->enabled = true;
         }
+        $cache->save();
     }
 
     /**
