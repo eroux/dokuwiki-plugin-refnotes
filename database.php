@@ -112,7 +112,6 @@ class refnotes_reference_database {
         $opts = array('listdirs'  => false,
               'listfiles' => true,
               'pagesonly' => true,
-              'depth'     => 1,
               'skipacl'   => false, // to check for read right
               'sneakyacl' => true,
               'showhidden'=> false,
