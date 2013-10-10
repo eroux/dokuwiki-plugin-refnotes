@@ -1,0 +1,7 @@
+This is the Refnotes Dokuwiki plugin.
+
+This repository is a fork from the initial repository, with the following
+enhancement (which make it work on my system):
+ * changed strange parsing of .idx file to get the pages in a namespace,
+     use builtin Dokuwiki function "search" instead.
+ * adding .gitignore, README and LICENSE
