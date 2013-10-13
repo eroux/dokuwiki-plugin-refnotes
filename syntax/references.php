@@ -141,15 +141,16 @@ class syntax_plugin_refnotes_references extends DokuWiki_Syntax_Plugin {
      */
     public function render($mode, $renderer, $data) {
         $result = false;
-
         try {
             switch ($mode) {
                 case 'xhtml':
                     $result = $this->renderXhtml($renderer, $data);
                     break;
-
                 case 'metadata':
                     $result = $this->renderMetadata($renderer, $data);
+                    break;
+                case 'latex':
+                    $result = $this->renderLaTeX($renderer, $data);
                     break;
             }
         }
@@ -185,6 +186,31 @@ class syntax_plugin_refnotes_references extends DokuWiki_Syntax_Plugin {
         else {
             return array('render', $reference->getAttributes());
         }
+    }
+
+    /**
+     * Added by Elie Roux <elie.roux@telecom-bretagne.eu>, 2013/10/13
+     */
+    public function renderLaTeX($renderer, $data) {
+        switch ($data[0]) {
+            case 'start':
+                // nothing to do here
+                break;
+            case 'render':
+                $ref = '';
+                if (empty($data[1]['name'])) {
+                    // case of an invalid reference
+                    return true;
+                }
+                if ($data[1]['ns'] == ':') {
+                    // when ns is the root ns, we don't output ":"
+                    $renderer->doc .= "\\cite{".$data[1]['name']."}";
+                } else {
+                    $renderer->doc .= "\\cite{".$data[1]['ns'].$data[1]['name']."}";
+                }
+                break;
+        }
+        return true;
     }
 
     /**
