@@ -5,3 +5,5 @@ enhancement (which make it work on my system):
  * changed strange parsing of .idx file to get the pages in a namespace,
      use builtin Dokuwiki function "search" instead.
  * adding .gitignore, README and LICENSE
+ * basic support for TeXit plugin, working only for references. Please test
+     before use, it may need some modifications for your needs.
